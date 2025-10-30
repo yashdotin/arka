@@ -1,0 +1,92 @@
+
+app.get('/chat', isLoggedIn, async (req, res) => {
+  try {
+    const chatHistory = await getChatHistory(req.user._id);
+    res.render('pages/chat', {
+      messages: chatHistory.length ? chatHistory : req.session.messages
+    });
+  } catch (err) {
+    console.error("Error loading chat:", err.message);
+    req.flash('error', 'Unable to load chat at the moment.');
+    res.redirect('/');
+  }
+});
+
+app.post('/chat/send', isLoggedIn, async (req, res) => {
+  try {
+    const userMessage = req.body.message?.trim();
+    if (!userMessage) {
+      req.flash('error', 'Message cannot be empty.');
+      return res.redirect('/chat');
+    }
+
+    const systemInstruction = "You are Arka, a friendly, helpful AI assistant.";
+    const apiResponse = await callLlamaApi(userMessage, systemInstruction);
+    const botAnswer = apiResponse.data?.choices?.[0]?.message?.content || "No response from LLaMA.";
+
+    await saveChatHistory(req.user._id, userMessage, botAnswer);
+    req.session.messages.push({ sender: 'User', text: userMessage, time: new Date().toLocaleTimeString() });
+    req.session.messages.push({ sender: 'Bot', text: botAnswer, time: new Date().toLocaleTimeString() });
+
+    res.redirect('/chat');
+  } catch (err) {
+    console.error("Chat Error:", err.message);
+    req.session.messages.push({ sender: 'Bot', text: 'Sorry, there was an issue connecting to LLaMA.', time: new Date().toLocaleTimeString() });
+    res.redirect('/chat');
+  }
+});
+
+async function getChatHistory(userId) {
+  try {
+    const chatHistory = await Chat.find({ user: userId }).sort({ createdAt: 1 });
+    return chatHistory;
+  } catch (err) {
+    console.error("Error loading chat history:", err.message);
+    return [];
+  }
+}
+
+async function callLlamaApi(userMessage, systemInstruction) {
+  try {
+    const LLAMA_API_KEY = process.env.LLAMA_API_KEY;
+    const MODEL_NAME = process.env.MODEL_NAME;
+    const API_URL = process.env.LLAMA_API_URL;
+
+    const response = await axios.post(
+      API_URL,
+      {
+        model: MODEL_NAME,
+        messages: [
+          { role: 'system', content: systemInstruction },
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.6,
+        max_tokens: 300
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${LLAMA_API_KEY}`
+        }
+      }
+    );
+    return response;
+  } catch (err) {
+    console.error("Error calling LLaMA API:", err.message);
+    throw err;
+  }
+}
+
+async function saveChatHistory(userId, userMessage, botAnswer) {
+  try {
+    await Chat.create({
+      user: userId,
+      messages: [
+        { sender: 'User', text: userMessage },
+        { sender: 'Bot', text: botAnswer }
+      ]
+    });
+  } catch (err) {
+    console.error("Error saving chat history:", err.message);
+  }
+}

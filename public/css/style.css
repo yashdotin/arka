@@ -1,0 +1,76 @@
+body, html{
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand{
+    font-size: 24px;
+    font-weight: bold;
+}
+.fa-robot{
+    color: blue;
+    font-size: 40px;
+}
+
+.f-info{
+    background-color: gainsboro;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-family: "Poppins", sans-serif;
+    color: #333;
+    margin-top: auto;
+}
+.f-info-socials{
+    display: flex;
+    gap: 1.5rem;
+}
+.f-info-socials i {
+    font-size: 1.5rem;
+    color: #555;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+.fa-github:hover {
+    color: black;
+    transform: scale(1.2);
+}
+.fa-x:hover {
+    color: #1DA1F2;  /* Twitter blue */
+    transform: scale(1.2);
+}   
+.fa-square-linkedin:hover {
+    color: blue;
+    transform: scale(1.2);
+}
+.fa-square-instagram:hover {
+  color: #E4405F;  /* Instagram pink */
+  transform: scale(1.2);
+  transition: all 0.3s ease;
+}
+.f-info-brand{
+   
+    font-size: small;
+    font-weight: 500;
+    color: darkslategrey;
+
+}
+
+.container{
+    flex: 1;
+
+}
+.logo-link img {
+    width: 100px;   /* adjust width */
+    height: 100px;  /* adjust height */
+    object-fit: contain; /* keeps aspect ratio */
+}
+
+
