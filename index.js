@@ -169,14 +169,32 @@ app.post('/forgot', async (req, res) => {
 
     const resetURL = `https://arka-oh4z.onrender.com/reset/${token}`;
 
+<<<<<<< HEAD
     await transporter.sendMail({
       to: user.email,
       from: 'arkasolutions007@gmail.com',
       subject: 'Password Reset Link - Arka',
       text: `Click here to reset your password: ${resetURL}`
     });
+=======
+   const info = await transporter.sendMail({
+  to: user.email,
+  from: process.env.EMAIL_USER,
+  subject: 'Password Reset Link - Arka',
+  text: `Hey ${user.username || ''},
+>>>>>>> 9f8a160 (Initial commit)
 
-    req.flash('success', 'An email has been sent with password reset instructions.');
+You requested to reset your password for Arka. Click the link below to set a new one:
+${resetURL}
+
+If you didn’t request this, just ignore this message.
+
+— The Arka Team`
+});
+console.log("Mail response:", info);
+
+    console.log(resetURL);
+    req.flash('success', 'An email has been sent with password reset instructions.(check spam folder too)');
     res.redirect('/forgot');
 
   } catch (err) {
