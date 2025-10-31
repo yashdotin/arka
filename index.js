@@ -167,7 +167,7 @@ app.post('/forgot', async (req, res) => {
       }
     });
 
-    const resetURL = `${process.env.BASE_URL}/reset/${token}`;
+    const resetURL = `https://arka-oh4z.onrender.com/reset/${token}`;
 
     await transporter.sendMail({
       to: user.email,
