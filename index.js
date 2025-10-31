@@ -171,7 +171,7 @@ app.post('/forgot', async (req, res) => {
 
     await transporter.sendMail({
       to: user.email,
-      from: 'yashawasthi854@gmail.com',
+      from: 'arkasolutions007@gmail.com',
       subject: 'Password Reset Link - Arka',
       text: `Click here to reset your password: ${resetURL}`
     });
