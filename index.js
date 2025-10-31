@@ -181,7 +181,7 @@ app.post('/forgot', async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    req.flash('error', 'Something went wrong.');
+    req.flash('error', err.message || 'Something went wrong.');
     res.redirect('/forgot');
   }
 });
